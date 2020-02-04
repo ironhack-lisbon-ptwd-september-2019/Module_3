@@ -15,7 +15,7 @@ const displayOscarsText = (hasOscars) => {
 }
 
 class ImprovedCard extends React.Component {
-  render() {
+  createMovieElement() {
     // NOTE awardText cannot use a ternary operator or conditional rendering because it has three possible outcomes
     let awardText;
     if (this.props.hasOscars) {
@@ -47,6 +47,21 @@ class ImprovedCard extends React.Component {
         <button onClick={this.props.clickToDelete}>Delete!</button>
       </div>
     );
+  }
+
+  render() {
+    // the code inside of this.createMovieElement() is not new,
+    // it has just been moved to a function. now, we are saving it to a variable,
+    // instead of immediately rendering it to the screen like we were doing before
+    const movieElement = this.createMovieElement();
+
+    // renderMovie will evaluate to true/false, if the movie should be rendered to the screen
+    // the page will only show movies that have won an oscar (when showOscarMovies === true)
+    // or only show the movies which have NOT won an oscar (when showOscarMovies === false)
+    const renderMovie = this.props.showOscarMovies === this.props.hasOscars;
+
+    // we can now use conditional rendering instead of the filteredMovies variable!!
+    return renderMovie && movieElement;
   }
 
 };
