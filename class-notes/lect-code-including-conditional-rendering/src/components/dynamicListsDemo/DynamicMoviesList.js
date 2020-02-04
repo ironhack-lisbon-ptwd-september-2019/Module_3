@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import ImprovedCard from "./ImprovedCard";
+import AddMovie from "./AddMovie";
 
 class DynamicMoviesList extends Component {
   constructor() {
@@ -13,6 +14,8 @@ class DynamicMoviesList extends Component {
         { id: 2, title: "The Shawshank Redemption", director: "Frank Darabont", hasOscars: false, IMDbRating: 9.3 }
       ],
       showOscarAwarded: false,
+      // we can use nextID to store the next 'id' value to be used when adding a movie
+      nextID: 3, // because this.state.movies.length === 3, and we cannot check the length of a variable while we are declaring it
     }
   }
 
@@ -45,6 +48,21 @@ class DynamicMoviesList extends Component {
     this.setState({movies: moviesCopy});
   }
 
+  addMovieHandler = (theMovie) => {
+    const moviesCopy = [...this.state.movies];
+
+    // NOTE the length of the movies will continuosly change when we delete movies,
+    // so intead of doing something like this, theMovie['id'] = this.state.movies.length;
+    // we use the nextid variable stored in state, and then increase it by 1, as seen below
+    theMovie['id'] = this.state.nextID;
+
+    moviesCopy.push(theMovie);
+    this.setState({
+      movies: moviesCopy,
+      nextID: this.state.nextID + 1,
+    });
+  }
+
   render() {
     const {showOscarAwarded, movies} = this.state;
     console.log(movies);
@@ -56,6 +74,8 @@ class DynamicMoviesList extends Component {
 
     return (
       <div>
+        <hr />
+        <AddMovie addTheMovie={this.addMovieHandler} />
         <hr />
         <button onClick={() => this.toggleMovies() }>
           {/* NOTE another example of a ternary operator below.
