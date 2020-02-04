@@ -27,12 +27,19 @@ class DynamicMoviesList extends Component {
   // NOTE this handler is an exmple of lifting up the state!!
   // we pass this function to the child component, ImprovedCard, where it is actually executed
   // by doing this, ImprovedCard can change the state which lives inside its parent component (in this file)
-  deleteMovieHandler = (movieIndex) => {
+  deleteMovieHandler = (movieId) => {
     // NOTE as part of the bug fix. we want to delete the movie from the ORIGNAL array of movies, located in the state. not the filtered movies list!
     const moviesCopy = [...this.state.movies];
     // NOTE before we modify the state, we make a copy of the array we need (above)
     // then we can delete the appropriate movie (below) see this for docs about splice https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice#Remove_1_element_from_index_3
-    moviesCopy.splice(movieIndex, 1);
+
+    // NOTE since we only have the id of the movie we want to delete,
+    // we have to use array.findIndex() instead of array.indexOf()
+    // IF we had access to the entire movie object we could instead use: const original_index = this.state.movies.indexOf(movie);
+    // see this example: https://discuss.codecademy.com/t/when-should-i-use-findindex-vs-indexof/368185
+    const original_index = this.state.movies.findIndex(mov => mov.id === movieId);
+    moviesCopy.splice(original_index, 1);
+
     // NOTE after we remove the deleted movie, from the copy of the movies list,
     // we set the new list of movies, back into the state (below)
     this.setState({movies: moviesCopy});
