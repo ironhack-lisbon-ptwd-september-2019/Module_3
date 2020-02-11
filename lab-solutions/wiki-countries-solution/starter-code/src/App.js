@@ -8,12 +8,17 @@ import "./App.css";
 // import countries from "./countries.json";
 
 class App extends Component {
-  state = {
-    countries: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      countries: [],
+      activeCCA3: '',
+    };
+    this.onCountryClick = this.onCountryClick.bind(this);
+  }
 
   componentDidMount() {
-    // console.log("did mount");
+    console.log("did mount");
     axios
       .get("https://countries.tech-savvy.tech/countries")
       .then(response => {
@@ -25,18 +30,27 @@ class App extends Component {
 
   // for learning purposes
   componentDidUpdate(prevProps, prevState) {
-    // console.log(prevProps, prevState)
+    console.log(prevProps, prevState);
+    if (this.state.activeCCA3 !== prevState.activeCCA3) {
+      // console.log('new country clicked!', this.state.activeCCA3, prevState.activeCCA3);
+      const newCountryElement = document.getElementsByClassName(this.state.activeCCA3)[0];
+      newCountryElement.scrollIntoView();
+    }
     console.log("update");
+  }
+
+  onCountryClick(clickedCCA3) {
+    this.setState({activeCCA3: clickedCCA3});
   }
 
   render() {
     // console.log("render");
 
-    const countries = this.state.countries;
+    const {countries} = this.state;
     console.log(countries);
-    //   if (!countries.length) {
-    //       return (<div>Loading</div>)
-    //   }
+    if (!countries.length) {
+        return <div className="py-5 text-center">Loading</div>;
+    }
 
     return (
       <div className="App">
@@ -49,7 +63,11 @@ class App extends Component {
                 style={{maxHeight: "90vh", overflow: "scroll"}}
               >
                 <div className="list-group">
-                  <CountriesList countries={countries} />
+                  <CountriesList 
+                    countries={countries} 
+                    onCountryClick={this.onCountryClick} 
+                    activeCountry={this.state.activeCCA3}
+                  />
                 </div>
               </div>
               <Switch>
@@ -57,7 +75,11 @@ class App extends Component {
                   exact
                   path="/:cca3"
                   render={props => (
-                    <CountryDetails {...props} countries={countries} />
+                    <CountryDetails
+                      {...props}
+                      onCountryClick={this.onCountryClick}
+                      countries={countries}
+                    />
                   )}
                 />
               </Switch>
