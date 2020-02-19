@@ -5,10 +5,10 @@ class Search extends React.Component {
     input: ""
   };
 
-  handleSearch = event => {
-    const { value } = event.target;
-    this.props.filterFood(value);
-    this.setState({input: value});
+  handleSearch = (event) => {
+    // const { value } = event.target;
+    this.props.filterFood(event.target.value);
+    this.setState({input: event.target.value});
   };
 
   render() {

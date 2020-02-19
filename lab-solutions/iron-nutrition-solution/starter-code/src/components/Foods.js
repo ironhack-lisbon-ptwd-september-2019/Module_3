@@ -19,6 +19,7 @@ class Foods extends React.Component {
   state = {
     displayAddForm: false,
     foods,
+    // foods: foods,
     filtered: foods,
     today: []
   };
@@ -29,14 +30,14 @@ class Foods extends React.Component {
     });
   };
 
-  filterFood = input => {
+  filterFoodFunc = input => {
     const filtered = this.state.foods.filter(el =>
       el.name.toLowerCase().includes(input.toLowerCase())
     );
     this.setState({ filtered });
   };
 
-  pushFood = food => {
+  pushFoodFunc = food => {
     // const foods = this.state.foods.slice();
     const foods = [...this.state.foods];
     // using unshift like below just pushes the new food into the array, but into the first position!
@@ -64,6 +65,14 @@ class Foods extends React.Component {
     });
   };
 
+  displayFoodFormText() {
+    if (this.state.displayAddForm) {
+      return "Click to Hide";
+    } else {
+      return "Click to Show";
+    }
+  }
+
   render() {
     const {filtered, today, displayAddForm} = this.state;
 
@@ -73,8 +82,8 @@ class Foods extends React.Component {
       0
     );
 
-    const arrayOfFoodComponents = filtered.map((el, i) => (
-      <FoodBox key={i} food={el} addFood={this.addFood} />
+    const arrayOfFoodComponents = filtered.map((oneFood, i) => (
+      <FoodBox key={i} food={oneFood} addFood={this.addFood} />
     ));
 
     const arrayOfListItemsShowingFoodEatenToday = today.map((el, i) => {
@@ -83,16 +92,19 @@ class Foods extends React.Component {
           {el.quantity} {el.name} = {el.calories} cal
         </li>
       );
-    })
+    });
+
+    const text = this.state.displayAddForm ? "Click to Hide" : "Click to show"; 
 
     return (
       <div>
-        <Search filterFood={this.filterFood} />
+        <Search filterFood={this.filterFoodFunc} />
         <button className="button" onClick={this.handleClick}>
-          Add Food
+          {/* {this.displayFoodFormText()} */}
+          {text}
         </button>
         {/* NOTE the below is a VERY common use case of conditional rendering! */}
-        {displayAddForm && <AddFoodForm pushFood={this.pushFood} />}
+        {displayAddForm && <AddFoodForm pushFood={this.pushFoodFunc} />}
         <div>
           <div style={{ width: "70%", float: "left" }}>
             {arrayOfFoodComponents}
